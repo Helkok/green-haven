@@ -1,7 +1,6 @@
 from app.core.database import Base
-from pydantic import EmailStr
-from sqlalchemy import String, ForeignKey, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, Text
+from sqlalchemy.orm import Mapped, mapped_column
 from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()

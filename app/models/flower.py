@@ -1,10 +1,8 @@
+from datetime import timedelta
+
 from app.core.database import Base
 from sqlalchemy import String, ForeignKey, Interval, DateTime, func, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from app.models.advice import Advice
-from app.models.personal_flower import PersonalFlower
-from app.models.review import Review
 
 
 class Flower(Base):
@@ -20,10 +18,10 @@ class Flower(Base):
     description: Mapped[str | None] = mapped_column(String(300))
     photo: Mapped[str | None] = mapped_column(String(150))
 
-    watering_interval: Mapped[Interval | None]  # Интервал полива
-    fertilizing_interval: Mapped[Interval | None]  # Интервал удобрения
-    transplanting_interval: Mapped[Interval | None]  # Интервал пересадки
+    watering_interval: Mapped[timedelta | None]  # Интервал полива
+    fertilizing_interval: Mapped[timedelta | None]  # Интервал удобрения
+    transplanting_interval: Mapped[timedelta | None]  # Интервал пересадки
 
-    reviews: Mapped["Review"] = relationship("Review", back_populates="flower")
-    personal_flower: Mapped["PersonalFlower"] = relationship("PersonalFlower", back_populates="flower")
-    advices: Mapped["Advice"] = relationship("Advice", back_populates="flower")
+    reviews = relationship("Review", back_populates="flower")
+    personal_flower = relationship("PersonalFlower", back_populates="flower")
+    advices = relationship("Advice", back_populates="flower")

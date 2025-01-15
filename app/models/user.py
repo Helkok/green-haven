@@ -3,10 +3,6 @@ from pydantic import EmailStr
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.models.advice import Advice
-from app.models.personal_flower import PersonalFlower
-from app.models.review import Review
-
 
 class User(Base):
     """Таблица users содержит информацию о пользователях."""
@@ -21,9 +17,9 @@ class User(Base):
     info: Mapped[str] = mapped_column(String(150), nullable=False)
     photo: Mapped[str | None] = mapped_column(String(150))
 
-    reviews: Mapped[list["Review"]] = relationship("Review", back_populates="user", cascade="all, delete-orphan")
-    personal_flower: Mapped[list["PersonalFlower"]] = relationship("Flower", back_populates="user", cascade="all, delete-orphan")
-    advices: Mapped[list["Advice"]] = relationship("Advice", back_populates="user", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
+    personal_flower = relationship("Flower", back_populates="user", cascade="all, delete-orphan")
+    advices = relationship("Advice", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User {self.username}>"

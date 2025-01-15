@@ -1,9 +1,7 @@
 from app.core.database import Base
-from pydantic import EmailStr
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.models.note import Note
 
 
 class TypeNote(Base):
@@ -13,4 +11,4 @@ class TypeNote(Base):
 
     name: Mapped[str] = mapped_column(String(20), nullable=False)
 
-    notes: Mapped[list["Note"]] = relationship("Note", back_populates="type_note", cascade="all, delete-orphan")
+    notes = relationship("Note", back_populates="type_note", cascade="all, delete-orphan")
