@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRES_MIN: int
 
     class Config:
-        env_file = '.env'
+        env_file = 'app/core/.env'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
