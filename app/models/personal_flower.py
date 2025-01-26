@@ -24,3 +24,4 @@ class PersonalFlower(Base):
 
     flower = relationship("Flower", back_populates="personal_flower")
     user = relationship("User", back_populates="personal_flower")
+    notes = relationship("Note", back_populates="personal_flower")
