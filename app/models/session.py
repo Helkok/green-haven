@@ -9,10 +9,10 @@ class SessionTable(Base):
     """Сессия пользователя"""
     __tablename__ = "sessions"
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     refresh_token: Mapped[str] = mapped_column(String, nullable=False)
-    user_agent: Mapped[str | None]
-    ip_address: Mapped[str | None]
+    user_agent: Mapped[str | None] = mapped_column(String(255))
+    ip_address: Mapped[str | None] = mapped_column(String(45))
     expired_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow())
 
     user = relationship("User", back_populates="session")

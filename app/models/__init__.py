@@ -8,4 +8,4 @@ from .note import Note
 from .type_note import TypeNote
 from .review import Review
 from .review_photo import ReviewPhoto
-
+from .session import SessionTable
