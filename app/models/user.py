@@ -18,9 +18,9 @@ class User(Base):
     photo: Mapped[str | None] = mapped_column(String(150))
 
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
-    personal_flower = relationship("Flower", back_populates="user", cascade="all, delete-orphan")
+    personal_flower = relationship("PersonalFlower", back_populates="user", cascade="all, delete-orphan")
     advices = relationship("Advice", back_populates="user", cascade="all, delete-orphan")
     session = relationship("SessionTable", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<User {self.username}>"
+        return f"<User {self.username}, {self.email}>"
