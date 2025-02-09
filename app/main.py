@@ -3,8 +3,9 @@ from fastapi import FastAPI, Depends
 from app.middleware.middleware import DBSessionMiddleware
 from app.routers import *
 from app.utils.user import get_current_user
+from app.constants import DESCRIPTION_APP
 
-app = FastAPI()
+app = FastAPI(title="Flowers API", summary="Flowers API", version="0.1.0", description=DESCRIPTION_APP)
 app.add_middleware(DBSessionMiddleware)
 
 
