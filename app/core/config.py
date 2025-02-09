@@ -16,8 +16,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
 
     ACCESS_TOKEN_EXPIRES_MIN: int
+    REFRESH_TOKEN_EXPIRES_DAYS: int
+    FERNET_KEY: str
 
     class Config:
+
         env_file = 'app/core/.env'
 
     def __init__(self, **kwargs):
@@ -26,4 +29,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-database_url = settings.DATABASE_URL
