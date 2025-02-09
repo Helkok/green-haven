@@ -1,20 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from starlette.requests import Request
 
+from app.DAO.base import FlowerDAO
 from app.schemas.flower import FlowerCreate
-from app.utils.flowers import get_all_flowers_from_db, add_flower_to_db
+from app.utils.flowers import add_flower_to_db
 
 router = APIRouter()
 
 
+@router.get("/get_flower/{flower_id}", summary="Получить информацию о цветке")
+async def get_flower(flower_id: int, request: Request):
+    flower = await FlowerDAO.find_one_or_none_by_id(session=request.state.db, data_id=flower_id)
+    if flower is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Цветок не найден")
+    return flower
 
-
-@router.get("/get_all_flower/", summary="Получить список всех цветов")
+@router.get("/getList/", summary="Получить список всех цветов")
 async def get_all_flowers(request: Request):
-    all_flowers = await get_all_flowers_from_db(request.state.db)
+    all_flowers = await FlowerDAO.find_all(session=request.state.db)
     return all_flowers
-
-
 
 
 
@@ -22,3 +26,8 @@ async def get_all_flowers(request: Request):
 async def add_flower(flower: FlowerCreate, request: Request):
     new_flower = await add_flower_to_db(flower, request.state.db)
     return f"Цветок {new_flower.name} успешно добавлен в базу данных"
+
+@router.delete("/delete_flower/{flower_id}", summary="Удалить цветок", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_flower(flower_id: int, request: Request):
+    await FlowerDAO.delete(session=request.state.db, data_id=flower_id)
+    return {"message": "Цветок успешно удален"}
