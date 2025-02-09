@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 from typing import List, Dict
 
 from fastapi import APIRouter, Depends
@@ -16,6 +17,7 @@ class MessageRead(BaseModel):
     user_from: int = Field(..., description="ID отправителя сообщения")
     user_to: int = Field(..., description="ID получателя сообщения")
     message: str = Field(..., description="Содержимое сообщения")
+    created_at: datetime = Field(..., description="Дата и время создания сообщения")
 
 
 class MessageCreate(BaseModel):
@@ -23,13 +25,14 @@ class MessageCreate(BaseModel):
     message: str = Field(..., description="Содержимое сообщения")
 
 
-@router.get("/messages/{user_id}", response_model=List[MessageRead])
+@router.get("/{user_id}", response_model=List[MessageRead], summary="Получить сообщения между пользователями")
 async def get_messages(user_id: int, current_user: current_user, request: Request):
     return await MessageDAO.get_messages_between_users(user_id_1=user_id, user_id_2=current_user.id,
                                                        session=request.state.db) or []
 
 
-@router.post("/messages", response_model=MessageCreate)
+@router.post("/", response_model=MessageCreate, status_code=201,
+             summary="Отправить сообщение пользователю по ID")
 async def send_message(message: MessageCreate, curr_user: current_user, request: Request):
     # Добавляем новое сообщение в базу данных
     await MessageDAO.add(
@@ -43,7 +46,7 @@ async def send_message(message: MessageCreate, curr_user: current_user, request:
     message_data = {
         'user_from': curr_user.id,
         'user_to': message.user_to,
-        'message': message.message,
+        'message': message.message
     }
 
     # Уведомляем получателя и отправителя через WebSocket
