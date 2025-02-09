@@ -57,3 +57,30 @@ class FlowerDAO(BaseDAO):
 
 class PersonalFlowerDAO(BaseDAO):
     model = PersonalFlower
+
+
+class MessageDAO(BaseDAO):
+    model = Message
+
+    @classmethod
+    async def add(cls, user_from, user_to, message, session: AsyncSession):
+        '''Функция для добавления сообщения в базу данных'''
+        try:
+            new_message = Message(user_from=user_from, user_to=user_to, message=message)
+            session.add(new_message)
+            await session.commit()
+            return new_message
+        except Exception as e:
+            await session.rollback()
+            raise e
+
+    @classmethod
+    async def get_messages_between_users(cls, user_id_1, user_id_2, session: AsyncSession):
+        '''Функция для получения сообщений между пользователями'''
+        result = await session.execute(select(Message).filter(
+            ((Message.user_from == user_id_1) & (Message.user_to == user_id_2)) |
+            ((Message.user_from == user_id_2) & (Message.user_to == user_id_1))
+        ))
+        return result.scalars().all()
+
+
