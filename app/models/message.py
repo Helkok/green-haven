@@ -1,9 +1,11 @@
+from app.core.config import settings
 from app.core.database import Base
 from sqlalchemy import ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from cryptography.fernet import Fernet
 
-key = Fernet.generate_key()
+key = settings.FERNET_KEY
+key = key.encode()
 cipher_suite = Fernet(key)
 
 class Message(Base):
