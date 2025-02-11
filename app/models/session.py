@@ -19,3 +19,5 @@ class SessionTable(Base):
 
     def __repr__(self):
         return f"<Session {self.id}>"
+
+
