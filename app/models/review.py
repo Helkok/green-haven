@@ -15,3 +15,4 @@ class Review(Base):
     user = relationship("User", back_populates="reviews")
     flower = relationship("Flower", back_populates="reviews")
     review_photos = relationship("ReviewPhoto", back_populates="review", cascade="all, delete-orphan")
+
