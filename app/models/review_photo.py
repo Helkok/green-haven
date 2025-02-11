@@ -11,3 +11,4 @@ class ReviewPhoto(Base):
     photo: Mapped[str] = mapped_column(String(150), nullable=False)
 
     review = relationship("Review", back_populates="review_photos")
+
