@@ -3,7 +3,6 @@ from starlette.requests import Request
 
 from app.DAO.base import FlowerDAO
 from app.schemas.flower import FlowerCreate
-from app.utils.flowers import add_flower_to_db
 
 router = APIRouter()
 
@@ -24,7 +23,7 @@ async def get_all_flowers(request: Request):
 
 @router.post("/add_flower/", summary="Добавить новый цветок")
 async def add_flower(flower: FlowerCreate, request: Request) -> str:
-    new_flower = await add_flower_to_db(flower, request.state.db)
+    new_flower = await FlowerDAO.add(request.state.db, **flower.model_dump())
     return f"Цветок {new_flower.name} успешно добавлен в базу данных"
 
 

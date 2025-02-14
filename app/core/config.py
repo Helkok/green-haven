@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     FERNET_KEY: str
 
     class Config:
-        env_file = 'app/core/.env'
+        env_file = 'app/.env'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

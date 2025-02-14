@@ -4,43 +4,12 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.DAO.base import UserDAO
+from app.core.security import verify_access_token, verify_password
 from app.models import User
-from app.schemas.user import LoginRequest, UserCreate
-from app.utils.utils import hash_password, verify_access_token, verify_password
-
-
-async def create_user(user: UserCreate, session: AsyncSession) -> User:
-    """
-    Создает нового пользователя в базе данных.
-    """
-    hashed_password = hash_password(user.password)
-    db_user = User(
-        username=user.username,
-        email=user.email,
-        password=hashed_password,
-        city=user.city,
-        info=user.info,
-        photo=user.photo,
-    )
-
-    try:
-        session.add(db_user)
-        await session.commit()
-        await session.refresh(db_user)
-        return db_user
-    except IntegrityError as e:
-        await session.rollback()
-        if 'email' in str(e.orig):
-            raise HTTPException(status_code=400, detail="User with this email already exists")
-        elif 'username' in str(e.orig):
-            raise HTTPException(status_code=400, detail="User with this username already exists")
-        else:
-            raise HTTPException(status_code=400, detail="Error occurred while creating user")
-
+from app.schemas.user import LoginRequest
 
 token_bearer = HTTPBearer()
 token_verify = Annotated[HTTPAuthorizationCredentials, Depends(token_bearer)]

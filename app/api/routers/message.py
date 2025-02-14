@@ -8,7 +8,7 @@ from starlette.requests import Request
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from app.DAO.base import MessageDAO
-from app.utils.user import current_user
+from app.api.dependencies import current_user
 
 router = APIRouter()
 
