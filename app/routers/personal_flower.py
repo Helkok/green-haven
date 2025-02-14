@@ -1,10 +1,8 @@
-
-
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter
 from starlette.requests import Request
 
 from app.DAO.base import PersonalFlowerDAO
-from app.schemas.flower import FlowerCreate
+
 router = APIRouter()
 
 

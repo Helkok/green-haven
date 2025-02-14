@@ -1,14 +1,14 @@
 import asyncio
 from datetime import datetime
-from typing import List, Dict
+from typing import Dict, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from pydantic import BaseModel, Field
 from starlette.requests import Request
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from app.utils.user import current_user
 from app.DAO.base import MessageDAO
+from app.utils.user import current_user
 
 router = APIRouter()
 

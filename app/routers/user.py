@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Request
 
 from app.DAO.base import UserDAO
 from app.schemas.user import UserResponse
-from app.utils.user import get_current_user, current_user
+from app.utils.user import current_user
 
 router = APIRouter()
 

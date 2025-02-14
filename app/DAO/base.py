@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import *
+from app.utils.exceptions import BadRequestError
 
 
 class BaseDAO:
@@ -31,6 +32,27 @@ class BaseDAO:
         result = await session.execute(select(cls.model).filter_by(id=data_id))
         return result.scalar_one_or_none()
 
+    @classmethod
+    async def add(cls, session: AsyncSession, **values):
+        '''Функция для добавления объекта в базу данных'''
+        new_model = cls.model(**values)
+        session.add(new_model)
+        await session.commit()
+        return new_model
+
+    @classmethod
+    async def delete(cls, session: AsyncSession, data_id: int):
+        query = await session.execute(select(cls.model).filter_by(id=data_id))
+        result = query.scalar_one_or_none()
+        if result is None:
+            raise BadRequestError
+        try:
+            await session.delete(result)
+            await session.commit()
+            return f"Успешный ответ."
+        except Exception as e:
+            await session.rollback()
+            raise BadRequestError
 
 class UserDAO(BaseDAO):
     model = User
@@ -39,21 +61,6 @@ class UserDAO(BaseDAO):
 class FlowerDAO(BaseDAO):
     model = Flower
 
-    @classmethod
-    async def delete(cls, session: AsyncSession, data_id: int):
-        '''Функция для удаления цветка из базы данных'''
-        result = await session.execute(select(Flower).filter_by(id=data_id))
-        db_flower = result.scalar_one_or_none()
-        if db_flower is None:
-            raise Exception(f"Цветок с id {data_id} не найден")
-        try:
-            await session.delete(db_flower)
-            await session.commit()
-            return f"{db_flower.name} успешно удален из базы данных"
-        except Exception as e:
-            await session.rollback()
-            raise e
-
 
 class PersonalFlowerDAO(BaseDAO):
     model = PersonalFlower
@@ -61,18 +68,6 @@ class PersonalFlowerDAO(BaseDAO):
 
 class MessageDAO(BaseDAO):
     model = Message
-
-    @classmethod
-    async def add(cls, user_from, user_to, message, session: AsyncSession):
-        '''Функция для добавления сообщения в базу данных'''
-        try:
-            new_message = Message(user_from=user_from, user_to=user_to, message=message)
-            session.add(new_message)
-            await session.commit()
-            return new_message
-        except Exception as e:
-            await session.rollback()
-            raise e
 
     @classmethod
     async def get_messages_between_users(cls, user_id_1, user_id_2, session: AsyncSession):

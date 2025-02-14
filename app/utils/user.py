@@ -1,16 +1,16 @@
 from datetime import datetime, timezone
 from typing import Annotated
 
-from fastapi import HTTPException, Depends, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends, HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.DAO.base import UserDAO
 from app.models import User
-from app.schemas.user import UserCreate, LoginRequest
-from app.utils.utils import hash_password, verify_password, verify_access_token
+from app.schemas.user import LoginRequest, UserCreate
+from app.utils.utils import hash_password, verify_access_token, verify_password
 
 
 async def create_user(user: UserCreate, session: AsyncSession) -> User:
@@ -40,8 +40,11 @@ async def create_user(user: UserCreate, session: AsyncSession) -> User:
             raise HTTPException(status_code=400, detail="User with this username already exists")
         else:
             raise HTTPException(status_code=400, detail="Error occurred while creating user")
+
+
 token_bearer = HTTPBearer()
 token_verify = Annotated[HTTPAuthorizationCredentials, Depends(token_bearer)]
+
 
 async def get_access_token(request: Request, token: HTTPAuthorizationCredentials = Depends(token_bearer)) -> str:
     """
@@ -73,8 +76,6 @@ async def authenticate_user(user: LoginRequest, session: AsyncSession) -> User:
     return db_user
 
 
-
-
 async def get_current_user(request: Request, token: str = Depends(get_access_token)):
     try:
         payload = verify_access_token(token)
@@ -94,5 +95,6 @@ async def get_current_user(request: Request, token: str = Depends(get_access_tok
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user
+
 
 current_user = Annotated[User, Depends(get_current_user)]

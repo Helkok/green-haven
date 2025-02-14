@@ -1,11 +1,8 @@
-from typing import List
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Flower
 from app.schemas.flower import FlowerCreate
-
 
 
 async def delete_flower_from_db(flower_id: int, session: AsyncSession) -> str:
@@ -20,6 +17,7 @@ async def delete_flower_from_db(flower_id: int, session: AsyncSession) -> str:
     except Exception as e:
         await session.rollback()
         raise e
+
 
 async def add_flower_to_db(flower: FlowerCreate, session: AsyncSession) -> Flower:
     db_flower = Flower(

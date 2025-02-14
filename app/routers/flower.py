@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from starlette.requests import Request
 
 from app.DAO.base import FlowerDAO
